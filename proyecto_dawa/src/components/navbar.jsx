@@ -1,32 +1,29 @@
-import React, { useState } from "react";
+import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import Menu from '@mui/material/Menu'
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
+import {NavLink} from 'react-router-dom'
 import '../styles/navbar.css';
 
-export default function NavbarComponent() {
-    const pages = ['Inicio', 'Servicios', 'Acerca de nosotros', 'Contactanos'];
-    const services = ['Precio de repuestos', 'Estado de la reparación'];
+export default function Navbar({ pages, settings, services }) {
+    
 
-    const [anchorElNav, setAnchorElNav] = useState(null);
-    const [anchorElServices, setAnchorElServices] = useState(null);
-    const [anchorElUser, setAnchorElUser] = useState(null);
+    const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchorElServices, setAnchorElServices] = React.useState(null);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
-    };
-
-    const handleOpenServicesMenu = (event) => {
-        setAnchorElServices(event.currentTarget);
     };
 
     const handleOpenUserMenu = (event) => {
@@ -37,23 +34,28 @@ export default function NavbarComponent() {
         setAnchorElNav(null);
     };
 
-    const handleCloseServicesMenu = () => {
-        setAnchorElServices(null);
-    };
-
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const handleOpenServicesMenu = (event) => {
+        setAnchorElServices(event.currentTarget);
+    };
+
+    const handleCloseServicesMenu = () => {
+        setAnchorElServices(null);
     };
 
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
+                    <MobileFriendlyIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
                         variant="h6"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -67,18 +69,7 @@ export default function NavbarComponent() {
                         Juan Repara
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'right' }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={page === 'Servicios' ? handleOpenServicesMenu : handleCloseNavMenu}
-                                sx={{ mx: 2, color: 'white' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
-                    <Box>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -86,7 +77,6 @@ export default function NavbarComponent() {
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
                             color="inherit"
-                            sx={{ display: { xs: 'block', md: 'none' } }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -109,17 +99,85 @@ export default function NavbarComponent() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem
-                                    key={page}
-                                    onClick={page === 'Servicios' ? handleOpenServicesMenu : handleCloseNavMenu}
-                                >
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
+                                page.title === 'Servicios' ? (
+                                    <MenuItem key={page.title} onClick={handleOpenServicesMenu}>
+                                        <Typography textAlign="center">{page.title}</Typography>
+                                    </MenuItem>
+                                ) : (
+                                    <MenuItem key={page.title} onClick={handleCloseNavMenu} component={NavLink} to={page.path}>
+                                        <Typography textAlign="center">{page.title}</Typography>
+                                    </MenuItem>
+                                )
                             ))}
                         </Menu>
                     </Box>
-                    <Box>
-                        <Tooltip title="Iniciar Sesion">
+                    <MobileFriendlyIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        Juan Repara
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'right', marginRight: '15px' } }}>
+                        {pages.map((page) => (
+                            page.title === 'Servicios' ? (
+                                <Button
+                                    key={page.title}
+                                    onClick={handleOpenServicesMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page.title}
+                                </Button>
+                            ) : (
+                                <Button
+                                    key={page.title}
+                                    component={NavLink}
+                                    to={page.path}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                >
+                                    {page.title}
+                                </Button>
+                            )
+                        ))}
+                    </Box>
+
+                    <Menu
+                        id="services-menu"
+                        anchorEl={anchorElServices}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                        }}
+                        open={Boolean(anchorElServices)}
+                        onClose={handleCloseServicesMenu}
+                    >
+                        {services.map((service) => (
+                            <MenuItem key={service.title} onClick={handleCloseServicesMenu} component={NavLink} to={service.path}>
+                                <Typography textAlign="center">{service.title}</Typography>
+                            </MenuItem>
+                        ))}
+                    </Menu>
+
+                    <Box sx={{ flexGrow: 0 }}>
+                        <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                             </IconButton>
@@ -140,38 +198,15 @@ export default function NavbarComponent() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">Login</Typography>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">Register</Typography>
-                            </MenuItem>
+                            {settings.map((setting) => (
+                                <MenuItem key={setting.title} onClick={handleCloseUserMenu} component={NavLink} to={setting.path}>
+                                    <Typography textAlign="center">{setting.title}</Typography>
+                                </MenuItem>
+                            ))}
                         </Menu>
                     </Box>
                 </Toolbar>
             </Container>
-            <Menu
-                sx={{ mt: '45px' }}
-                id="submenu-servicios"
-                anchorEl={anchorElServices}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={Boolean(anchorElServices)}
-                onClose={handleCloseServicesMenu}
-            >
-                {services.map((service) => (
-                    <MenuItem key={service} onClick={handleCloseServicesMenu}>
-                        <Typography textAlign="center">{service}</Typography>
-                    </MenuItem>
-                ))}
-            </Menu>
         </AppBar>
     );
 }

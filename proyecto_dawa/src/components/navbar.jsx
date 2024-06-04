@@ -15,9 +15,23 @@ import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import {NavLink} from 'react-router-dom'
 import '../styles/navbar.css';
 
-export default function Navbar({ pages, settings, services }) {
-    
+export default function Navbar() {
+    const pages = [
+        { title: 'Inicio', path: '/' },
+        { title: 'Servicios' },
+        { title: 'Acerca de nosotros', path: '/nosotros' },
+        { title: 'Contactanos', path: '/contacto' }
+    ];
 
+    const settings = [
+        { title: 'Login', path: '/login' },
+        { title: 'Registro', path: '/register' }
+    ];
+
+    const services = [
+        { title: 'Precios de los repuestos', path: '/precios' },
+        { title: 'Estado de la reparación', path: '/estado' }
+    ];
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [anchorElServices, setAnchorElServices] = React.useState(null);

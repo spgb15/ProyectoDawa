@@ -27,10 +27,18 @@
 
 .links:hover {
     text-decoration: underline;
+    cursor: pointer;
+    border: none;
 }
+
 
 .legal-column {
     flex: 1;
+    padding-left: 10%;
+}
+
+.legal-column nav {
+    width: 50%;
 }
 
 

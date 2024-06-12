@@ -12,8 +12,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
-import {NavLink} from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../styles/navbar.css';
+import { Divider } from '@mui/material';
 
 export default function Navbar() {
     const pages = [
@@ -23,18 +24,23 @@ export default function Navbar() {
         { title: 'Contactanos', path: '/contacto' }
     ];
 
-    const settings = [
-        { title: 'Login', path: '/login' },
-        { title: 'Registro', path: '/register' }
-    ];
-
     const services = [
         { title: 'Precios de los repuestos', path: '/precios' },
         { title: 'Estado de la reparación', path: '/estado' }
     ];
+
+    const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [anchorElServices, setAnchorElServices] = React.useState(null);
+    const [user, setUser] = React.useState(null);
+
+    React.useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            setUser(JSON.parse(user));
+        }
+    }, []);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -58,6 +64,12 @@ export default function Navbar() {
 
     const handleCloseServicesMenu = () => {
         setAnchorElServices(null);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setUser(null);
+        navigate('/login');
     };
 
     return (
@@ -144,7 +156,7 @@ export default function Navbar() {
                     >
                         Juan Repara
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'right', marginRight: '15px' } }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'left', marginRight: '15px' } }}>
                         {pages.map((page) => (
                             page.title === 'Servicios' ? (
                                 <Button
@@ -212,11 +224,26 @@ export default function Navbar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting.title} onClick={handleCloseUserMenu} component={NavLink} to={setting.path}>
-                                    <Typography textAlign="center">{setting.title}</Typography>
-                                </MenuItem>
-                            ))}
+                            {user ? (
+                                <div>
+                                    <MenuItem>
+                                        <Typography textAlign="center" fontWeight="bold">{user.nombre}</Typography>
+                                    </MenuItem>
+                                    <Divider/>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Typography textAlign="center">Cerrar sesión</Typography>
+                                    </MenuItem>
+                                </div>
+                            ) : (
+                                <>
+                                    <MenuItem onClick={handleCloseUserMenu} component={NavLink} to="/login">
+                                        <Typography textAlign="center">Login</Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleCloseUserMenu} component={NavLink} to="/register">
+                                        <Typography textAlign="center">Registro</Typography>
+                                    </MenuItem>
+                                </>
+                            )}
                         </Menu>
                     </Box>
                 </Toolbar>

@@ -1,5 +1,5 @@
 import MobileFriendly from "@mui/icons-material/MobileFriendly";
-import { Typography, Box, Button, Container } from "@mui/material";
+import { Typography, Button, Container } from "@mui/material";
 import { NavLink } from 'react-router-dom';
 import '../styles/footer.css';
 
@@ -29,6 +29,10 @@ export default function Component() {
         }
     ];
 
+    const isAuthenticated = !!localStorage.getItem('user');
+    const paginas_filtradas = isAuthenticated ? pages.filter(pages => pages.title !== 'Iniciar Sesión' && pages.title !== 'Registrarse') : pages;
+
+
     return (
         <footer className="bg">
             <Container maxWidth='xl'>
@@ -50,7 +54,7 @@ export default function Component() {
                     <div className="links-column">
                         <Typography component='h4' variant="subtitle" sx={{ marginBottom: '10px' }}>Quick Links</Typography>
                         <span style={{ display: 'inline-block', flexDirection: 'column' }} >
-                            {pages.map((page) => (
+                            {paginas_filtradas.map((page) => (
                                 <Button
                                     key={page.title}
                                     component={NavLink}

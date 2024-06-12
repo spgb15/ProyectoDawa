@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -25,9 +26,9 @@ function Copyright(props) {
 }
 
 export default function SignIn() {
-    const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const [credentials, setCredentials] = useState(null);
+    const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -68,25 +69,37 @@ export default function SignIn() {
             })
             .then((res) => {
                 if (!res.ok) {
-                    setError('Usuario o contraseña incorrectos');
-                    return null;
+                    return res.json().then((data) => {
+                        throw new Error(data.message || 'Usuario o contraseña incorrectos');
+                    });
                 }
                 return res.json();
             })
             .then((data) => {
+                console.log('Response from server:', data); // Log response for debugging
                 if (data && data.success) {
-                    setUser(data.user);
-                    setError(null);
-                    console.log("Entraste");
+                    if (data.data && data.data.cedula && data.data.nombre && data.data.rol) { // Verificar que data.user existe y tiene las propiedades esperadas
+                        const user = {
+                            cedula: data.data.cedula,
+                            nombre: data.data.nombre,
+                            rol: data.data.rol,
+                        };
+                        localStorage.setItem('user', JSON.stringify(user));
+                        setError(null);
+                        navigate('/');
+                    } else {
+                        throw new Error('Datos de usuario incompletos en la respuesta');
+                    }
                 } else if (data) {
                     setError(data.message);
                 }
             })
-            .catch(() => {
-                setError("Usuario o contraseña incorrecta.");
+            .catch((err) => {
+                console.error('Error during login:', err); // Log error for debugging
+                setError(err.message || 'Usuario o contraseña incorrecta.');
             });
         }
-    }, [credentials]);
+    }, [credentials, navigate]);
 
     return (
         <div className='contenedor'>

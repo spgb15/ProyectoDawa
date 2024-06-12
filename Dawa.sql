@@ -25,7 +25,7 @@ CREATE TABLE `equipos` (
   `marca` varchar(30) NOT NULL,
   `modelo` varchar(30)NOT NULL,
   `fecha_ingreso` datetime,
-  `usuario_id` int NOT NULL,
+  `usuario_id` int,
   FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`)
 );
 
@@ -54,7 +54,9 @@ CREATE TABLE `reparacion` (
 CREATE TABLE `repuesto` (
   `repuesto_id` int PRIMARY KEY auto_increment,
   `descripcion` varchar(50) NOT NULL,
-  `costo` float
+  `costo` float,
+  equipo_id int,
+  FOREIGN KEY (equipo_id) references equipo(equipo_id)
 );
 
 CREATE TABLE `factura` (

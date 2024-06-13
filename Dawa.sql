@@ -22,11 +22,13 @@ CREATE TABLE `usuarios` (
 );
 CREATE TABLE `equipos` (
   `equipo_id` int PRIMARY KEY auto_increment,
-  `marca` varchar(30) NOT NULL,
-  `modelo` varchar(30)NOT NULL,
+  id_marca int not null,
+  id_modelo int not null,
   `fecha_ingreso` datetime,
   `usuario_id` int,
-  FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`)
+  FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`),
+FOREIGN KEY (id_marca) references marca(id_marca),
+  FOREIGN KEY (id_modelo) references modelo(id_modelo)
 );
 
 CREATE TABLE `estado_reparacion` (
@@ -51,12 +53,26 @@ CREATE TABLE `reparacion` (
   FOREIGN KEY (`estado`) REFERENCES `estado_reparacion` (`id_estado`)
 );
 
+CREATE TABLE marca(
+id_marca int primary key auto_increment,
+descripcion varchar(30)
+);
+
+CREATE TABLE modelo(
+id_modelo int primary key auto_increment,
+id_marca int not null,
+descripcion varchar(30),
+FOREIGN KEY (id_marca) references marca(id_marca)
+);
+
 CREATE TABLE `repuesto` (
   `repuesto_id` int PRIMARY KEY auto_increment,
+  id_marca int,
+  id_modelo int,
   `descripcion` varchar(50) NOT NULL,
   `costo` float,
-  equipo_id int,
-  FOREIGN KEY (equipo_id) references equipo(equipo_id)
+  FOREIGN KEY (id_marca) references marca(id_marca),
+  FOREIGN KEY (id_modelo) references modelo(id_modelo)
 );
 
 CREATE TABLE `factura` (
@@ -75,7 +91,6 @@ CREATE TABLE `item_factura` (
   `item_id` int PRIMARY KEY auto_increment,
   `factura_id` int,
   `repuesto_id` int,
-  `descripcion` varchar(255),
   `cantidad` int,
   `valor_unitario` float,
   `valor_total` float,

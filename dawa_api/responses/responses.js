@@ -1,4 +1,4 @@
-export const  response_sucess = (p_data, p_message) => {
+export const  response_success = (p_data, p_message) => {
     return(
         {
             success: true,
@@ -36,6 +36,18 @@ export const  response_bad_request = (p_message) => {
             success: false,
             status_code: 400,
             message: p_message
+        }
+    );
+}
+
+
+export const response_created = (p_id, p_message ) => {
+    return(
+        {
+            success: true,
+            status_code: 201,
+            message: p_message,
+            record_id: p_id,
         }
     );
 }

@@ -59,7 +59,8 @@ descripcion varchar(30)
 );
 
 CREATE TABLE modelo(
-id_modelo int primary key auto_increment,
+id int primary key auto_increment,
+id_modelo int,
 id_marca int not null,
 descripcion varchar(30),
 FOREIGN KEY (id_marca) references marca(id_marca)
@@ -70,7 +71,8 @@ CREATE TABLE `repuesto` (
   id_marca int,
   id_modelo int,
   `descripcion` varchar(50) NOT NULL,
-  `costo` float,
+  `costo` float not null,
+  stock int not null,
   FOREIGN KEY (id_marca) references marca(id_marca),
   FOREIGN KEY (id_modelo) references modelo(id_modelo)
 );
@@ -121,28 +123,33 @@ VALUES
 ('7654321098', 'cli123', 'Carlos Rivera', '0987654325', 'carlos@example.com', 'Calle 345', 3, '', 'A');
 
 INSERT INTO MARCA(DESCRIPCION) VALUES ('SAMSUNG'),('APPLE'),('XIAOMI');
-INSERT INTO modelo(id_marca, descripcion) values
- (1, 'Galaxy S21 Ultra'), (1, 'Galaxy note 20 Ultra'), (1, 'Galaxy A52'), (1,'Galaxy Z Fold 2'), (1, 'Galaxy A72'),
- (2, 'iPhone 12 Pro Max'), (2, 'iPhone SE (2020)'), (2,'iPhone 11'), (2, 'iPhone XR'), (2, 'iPhone 12 Mini'), 
- (3,'Xiaomi Mi 11 Ultra'),(3,'Redmi Note 10 Pro'),(3,'Xiaomi Mi 10T Pro'),(3,'Redmi Note 9S'),(3,'Xiaomi Poco X3 NFC');
+INSERT INTO modelo(id_modelo ,id_marca, descripcion) values
+ (1,1, 'Galaxy S21 Ultra'), (2,1, 'Galaxy note 20 Ultra'), (3, 1, 'Galaxy A52'), (4, 1,'Galaxy Z Fold 2'), (5, 1, 'Galaxy A72'),
+ (1,2, 'iPhone 12 Pro Max'), (2,2, 'iPhone SE (2020)'), (3, 2,'iPhone 11'), (4, 2, 'iPhone XR'), (5, 2, 'iPhone 12 Mini'), 
+ (1, 3,'Xiaomi Mi 11 Ultra'),(2, 3,'Redmi Note 10 Pro'),(3, 3,'Xiaomi Mi 10T Pro'),(4, 3,'Redmi Note 9S'),(5, 3,'Xiaomi Poco X3 NFC');
  
-INSERT INTO repuesto(id_marca, id_modelo, descripcion, costo) VALUES 
-(1,1,'Batería', 35.00), (1,1,'Pantalla', 95.00), (1,1,'Camara', 50.00), (1,1,'Marco', 25.00), (1,1,'Altavoz', 65.00), (1,1,'Pin de carga', 15.00), (1,1,'Boton encendido', 10.00), (1,1,'Boton de volumen', 40.00), (1,1,'Sensor de huellas', 120.00), (1,1,'Auricular', 30.00),
-(1,2,'Batería', 80.00), (1,2,'Pantalla', 20.00), (1,2,'Camara', 70.00), (1,2,'Marco', 60.00), (1,2,'Altavoz', 55.00), (1,2,'Pin de carga', 35.00), (1,2,'Boton encendido', 50.00), (1,2,'Boton de volumen', 15.00), (1,2,'Sensor de huellas', 110.00), (1,2,'Auricular', 45.00),
-(1,3,'Batería', 40.00), (1,3,'Pantalla', 85.00), (1,3,'Camara', 30.00), (1,3,'Marco', 90.00), (1,3,'Altavoz', 20.00), (1,3,'Pin de carga', 75.00), (1,3,'Boton encendido', 60.00), (1,3,'Boton de volumen', 25.00), (1,3,'Sensor de huellas', 100.00), (1,3,'Auricular', 50.00),
-(1,4,'Batería', 50.00), (1,4,'Pantalla', 40.00), (1,4,'Camara', 85.00), (1,4,'Marco', 35.00), (1,4,'Altavoz', 70.00), (1,4,'Pin de carga', 90.00), (1,4,'Boton encendido', 20.00), (1,4,'Boton de volumen', 55.00), (1,4,'Sensor de huellas', 25.00), (1,4,'Auricular', 80.00),
-(1,5,'Batería', 75.00), (1,5,'Pantalla', 30.00), (1,5,'Camara', 60.00), (1,5,'Marco', 50.00), (1,5,'Altavoz', 95.00), (1,5,'Pin de carga', 45.00), (1,5,'Boton encendido', 70.00), (1,5,'Boton de volumen', 15.00), (1,5,'Sensor de huellas', 85.00), (1,5,'Auricular', 55.00),
+INSERT INTO repuesto (id_marca, id_modelo, descripcion, costo, stock) VALUES
+(1, 1, 'Batería', 35.00), (1, 1, 'Pantalla', 95.00), (1, 1, 'Camara', 50.00), (1, 1, 'Marco', 25.00), (1, 1, 'Altavoz', 65.00), (1, 1, 'Pin de carga', 15.00), (1, 1, 'Boton encendido', 10.00), (1, 1, 'Boton de volumen', 40.00), (1, 1, 'Sensor de huellas', 120.00), (1, 1, 'Auricular', 30.00),
+(1, 2, 'Batería', 80.00), (1, 2, 'Pantalla', 20.00), (1, 2, 'Camara', 70.00), (1, 2, 'Marco', 60.00), (1, 2, 'Altavoz', 55.00), (1, 2, 'Pin de carga', 35.00), (1, 2, 'Boton encendido', 50.00), (1, 2, 'Boton de volumen', 15.00), (1, 2, 'Sensor de huellas', 110.00), (1, 2, 'Auricular', 45.00),
+(1, 3, 'Batería', 40.00), (1, 3, 'Pantalla', 85.00), (1, 3, 'Camara', 30.00), (1, 3, 'Marco', 90.00), (1, 3, 'Altavoz', 20.00), (1, 3, 'Pin de carga', 75.00), (1, 3, 'Boton encendido', 60.00), (1, 3, 'Boton de volumen', 25.00), (1, 3, 'Sensor de huellas', 100.00), (1, 3, 'Auricular', 50.00),
+(1, 4, 'Batería', 50.00), (1, 4, 'Pantalla', 40.00), (1, 4, 'Camara', 85.00), (1, 4, 'Marco', 35.00), (1, 4, 'Altavoz', 70.00), (1, 4, 'Pin de carga', 90.00), (1, 4, 'Boton encendido', 20.00), (1, 4, 'Boton de volumen', 55.00), (1, 4, 'Sensor de huellas', 25.00), (1, 4, 'Auricular', 80.00),
+(1, 5, 'Batería', 75.00), (1, 5, 'Pantalla', 30.00), (1, 5, 'Camara', 60.00), (1, 5, 'Marco', 50.00), (1, 5, 'Altavoz', 95.00), (1, 5, 'Pin de carga', 45.00), (1, 5, 'Boton encendido', 70.00), (1, 5, 'Boton de volumen', 15.00), (1, 5, 'Sensor de huellas', 85.00), (1, 5, 'Auricular', 55.00),
 
-(2,6,'Batería', 65.00), (2,6,'Pantalla', 40.00), (2,6,'Camara', 120.00), (2,6,'Marco', 35.00), (2,6,'Altavoz', 80.00), (2,6,'Pin de carga', 20.00), (2,6,'Boton encendido', 95.00), (2,6,'Boton de volumen', 30.00), (2,6,'Sensor de huellas', 85.00), (2,6,'Auricular', 70.00),
-(2,7,'Batería', 90.00), (2,7,'Pantalla', 25.00), (2,7,'Camara', 60.00), (2,7,'Marco', 55.00), (2,7,'Altavoz', 15.00), (2,7,'Pin de carga', 100.00), (2,7,'Boton encendido', 50.00), (2,7,'Boton de volumen', 10.00), (2,7,'Sensor de huellas', 75.00), (2,7,'Auricular', 95.00),
-(2,8,'Batería', 25.00), (2,8,'Pantalla', 75.00), (2,8,'Camara', 85.00), (2,8,'Marco', 30.00), (2,8,'Altavoz', 50.00), (2,8,'Pin de carga', 45.00), (2,8,'Boton encendido', 20.00), (2,8,'Boton de volumen', 95.00), (2,8,'Sensor de huellas', 65.00), (2,8,'Auricular', 110.00),
-(2,9,'Batería', 50.00), (2,9,'Pantalla', 90.00), (2,9,'Camara', 40.00), (2,9,'Marco', 25.00), (2,9,'Altavoz', 95.00), (2,9,'Pin de carga', 85.00), (2,9,'Boton encendido', 55.00), (2,9,'Boton de volumen', 15.00), (2,9,'Sensor de huellas', 35.00), (2,9,'Auricular', 60.00),
-(2,10,'Batería', 110.00), (2,10,'Pantalla', 70.00), (2,10,'Camara', 55.00), (2,10,'Marco', 100.00), (2,10,'Altavoz', 20.00), (2,10,'Pin de carga', 60.00), (2,10,'Boton encendido', 25.00), (2,10,'Boton de volumen', 85.00), (2,10,'Sensor de huellas', 75.00), (2,10,'Auricular', 40.00),
+(2, 1, 'Batería', 65.00), (2, 1, 'Pantalla', 40.00), (2, 1, 'Camara', 120.00), (2, 1, 'Marco', 35.00), (2, 1, 'Altavoz', 80.00), (2, 1, 'Pin de carga', 20.00), (2, 1, 'Boton encendido', 95.00), (2, 1, 'Boton de volumen', 30.00), (2, 1, 'Sensor de huellas', 85.00), (2, 1, 'Auricular', 70.00),
+(2, 2, 'Batería', 90.00), (2, 2, 'Pantalla', 25.00), (2, 2, 'Camara', 60.00), (2, 2, 'Marco', 55.00), (2, 2, 'Altavoz', 15.00), (2, 2, 'Pin de carga', 100.00), (2, 2, 'Boton encendido', 50.00), (2, 2, 'Boton de volumen', 10.00), (2, 2, 'Sensor de huellas', 75.00), (2, 2, 'Auricular', 95.00),
+(2, 3, 'Batería', 25.00), (2, 3, 'Pantalla', 75.00), (2, 3, 'Camara', 85.00), (2, 3, 'Marco', 30.00), (2, 3, 'Altavoz', 50.00), (2, 3, 'Pin de carga', 45.00), (2, 3, 'Boton encendido', 20.00), (2, 3, 'Boton de volumen', 95.00), (2, 3, 'Sensor de huellas', 65.00), (2, 3, 'Auricular', 110.00),
+(2, 4, 'Batería', 50.00), (2, 4, 'Pantalla', 90.00), (2, 4, 'Camara', 40.00), (2, 4, 'Marco', 25.00), (2, 4, 'Altavoz', 95.00), (2, 4, 'Pin de carga', 85.00), (2, 4, 'Boton encendido', 55.00), (2, 4, 'Boton de volumen', 15.00), (2, 4, 'Sensor de huellas', 35.00), (2, 4, 'Auricular', 60.00),
+(2, 5, 'Batería', 110.00), (2, 5, 'Pantalla', 70.00), (2, 5, 'Camara', 55.00), (2, 5, 'Marco', 100.00), (2, 5, 'Altavoz', 20.00), (2, 5, 'Pin de carga', 60.00), (2, 5, 'Boton encendido', 25.00), (2, 5, 'Boton de volumen', 85.00), (2, 5, 'Sensor de huellas', 75.00), (2, 5, 'Auricular', 40.00),
 
-(3,11,'Batería', 55.00), (3,11,'Pantalla', 110.00), (3,11,'Camara', 40.00), (3,11,'Marco', 70.00), (3,11,'Altavoz', 35.00), (3,11,'Pin de carga', 65.00), (3,11,'Boton encendido', 25.00), (3,11,'Boton de volumen', 80.00), (3,11,'Sensor de huellas', 50.00), (3,11,'Auricular', 75.00),
-(3,12,'Batería', 75.00), (3,12,'Pantalla', 50.00), (3,12,'Camara', 95.00), (3,12,'Marco', 40.00), (3,12,'Altavoz', 65.00), (3,12,'Pin de carga', 25.00), (3,12,'Boton encendido', 85.00), (3,12,'Boton de volumen', 35.00), (3,12,'Sensor de huellas', 55.00), (3,12,'Auricular', 90.00),
-(3,13,'Batería', 100.00), (3,13,'Pantalla', 30.00), (3,13,'Camara', 65.00), (3,13,'Marco', 75.00), (3,13,'Altavoz', 45.00), (3,13,'Pin de carga', 15.00), (3,13,'Boton encendido', 90.00), (3,13,'Boton de volumen', 60.00), (3,13,'Sensor de huellas', 70.00), (3,13,'Auricular', 85.00),
-(3,14,'Batería', 95.00), (3,14,'Pantalla', 60.00), (3,14,'Camara', 25.00), (3,14,'Marco', 110.00), (3,14,'Altavoz', 55.00), (3,14,'Pin de carga', 50.00), (3,14,'Boton encendido', 35.00), (3,14,'Boton de volumen', 70.00), (3,14,'Sensor de huellas', 85.00), (3,14,'Auricular', 40.00),
-(3,15,'Batería', 65.00), (3,15,'Pantalla', 20.00), (3,15,'Camara', 75.00), (3,15,'Marco', 85.00), (3,15,'Altavoz', 95.00), (3,15,'Pin de carga', 45.00), (3,15,'Boton encendido', 70.00), (3,15,'Boton de volumen', 15.00), (3,15,'Sensor de huellas', 85.00), (3,15,'Auricular', 55.00);
+(3, 1, 'Batería', 55.00), (3, 1, 'Pantalla', 110.00), (3, 1, 'Camara', 40.00), (3, 1, 'Marco', 70.00), (3, 1, 'Altavoz', 35.00), (3, 1, 'Pin de carga', 65.00), (3, 1, 'Boton encendido', 25.00), (3, 1, 'Boton de volumen', 80.00), (3, 1, 'Sensor de huellas', 50.00), (3, 1, 'Auricular', 75.00),
+(3, 2, 'Batería', 75.00), (3, 2, 'Pantalla', 50.00), (3, 2, 'Camara', 95.00), (3, 2, 'Marco', 40.00), (3, 2, 'Altavoz', 65.00), (3, 2, 'Pin de carga', 25.00), (3, 2, 'Boton encendido', 85.00), (3, 2, 'Boton de volumen', 35.00), (3, 2, 'Sensor de huellas', 55.00), (3, 2, 'Auricular', 90.00),
+(3, 3, 'Batería', 100.00), (3, 3, 'Pantalla', 30.00), (3, 3, 'Camara', 65.00), (3, 3, 'Marco', 75.00), (3, 3, 'Altavoz', 45.00), (3, 3, 'Pin de carga', 15.00), (3, 3, 'Boton encendido', 90.00), (3, 3, 'Boton de volumen', 60.00), (3, 3, 'Sensor de huellas', 70.00), (3, 3, 'Auricular', 85.00),
+(3, 4, 'Batería', 95.00), (3, 4, 'Pantalla', 60.00), (3, 4, 'Camara', 25.00), (3, 4, 'Marco', 110.00), (3, 4, 'Altavoz', 55.00), (3, 4, 'Pin de carga', 50.00), (3, 4, 'Boton encendido', 35.00), (3, 4, 'Boton de volumen', 70.00), (3, 4, 'Sensor de huellas', 85.00), (3, 4, 'Auricular', 40.00),
+(3, 5, 'Batería', 65.00), (3, 5, 'Pantalla', 20.00), (3, 5, 'Camara', 75.00), (3, 5, 'Marco', 85.00), (3, 5, 'Altavoz', 95.00), (3, 5, 'Pin de carga', 45.00), (3, 5, 'Boton encendido', 70.00), (3, 5, 'Boton de volumen', 15.00), (3, 5, 'Sensor de huellas', 85.00), (3, 5, 'Auricular', 55.00);
+
+UPDATE REPUESTO SET STOCK = 150;
 
 
+
+
+	

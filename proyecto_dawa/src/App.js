@@ -1,30 +1,26 @@
 import './App.css';
-import React from 'react';
+import React, { useState} from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import inicio from './pages/inicio.js';
-import login from './pages/login.js';
+import Inicio from './pages/inicio.js';
+import Login from './pages/login.js';
 import Precios from './pages/precios.js';
+import Estado from './pages/estado.js'; 
 import Factura from './pages/factura.js';
-import EstadoCliente from './pages/estado.js';
-import EstadoTecnico from './pages/estadoTecnico.js';
-import EstadoAdmin from './pages/estadoAdmin.js';
+import Tecnico from './pages/estadoTecnico.js';
 
 function App() {
-
-  const isAuthenticated = !!localStorage.getItem('user');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (
     <Router>
       <Routes>
-        <Route path='/' Component={inicio}/>
-        {isAuthenticated ? (
-          <Route path='/login' element={<Navigate to="/" />} />
-        ):(<Route path='/login' Component={login}/>)}
-        <Route path='/precios' Component={Precios}/>
-        <Route path='/factura' Component={Factura}/>
-        <Route path='/estadoCliente' Component={EstadoCliente}/>
-        <Route path='/estadoTecnico' Component={EstadoTecnico}/>
-        <Route path='/estadoAdmin' Component={EstadoAdmin}/>
+        <Route path='/' element={<Inicio />} />
+        <Route path='/login' element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
+        <Route path='/factura' element={isAuthenticated ? <Factura /> : <Navigate to="/login" />} />
+        <Route path='/precios' element={<Precios />} />
+        <Route path='/estado' element={<Estado />} />
+        <Route path='/tecnico' element={<Tecnico />} />
+  
       </Routes>
     </Router>
   );

@@ -1,15 +1,20 @@
-import React from "react";
-import Navegacion from '../components/navbar.jsx';
-import FooterPage from '../components/footer.jsx';
-import EstadoCliente from "../components/from_estadoCliente.jsx";
+import React from'react';
 
-export default function Estado(){
-    return(
-        <div>
-            <Navegacion></Navegacion>
-            <br/>
-            <EstadoCliente></EstadoCliente>
-            <FooterPage></FooterPage>
-        </div>
-    );
-}
+import Navegacion from '../components/navbar.jsx';
+import EstadoAdministrador from '../components/from_estadoAdmin.jsx';
+import EstadoCliente from '../components/from_estadoCliente.jsx';
+import Footer from '../components/footer.jsx';
+
+function Estados() {
+
+
+  return (
+    <div>
+      <Navegacion></Navegacion>
+      <EstadoCliente></EstadoCliente>
+      <Footer></Footer>
+    </div>
+
+)}
+
+export default Estados;

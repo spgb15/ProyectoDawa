@@ -37,6 +37,8 @@ CREATE TABLE estado_reparacion (
   descripcion varchar(30) NOT NULL
 );
 
+
+
 CREATE TABLE reparacion (
   id_reparacion int PRIMARY KEY AUTO_INCREMENT,
   equipo_id int NOT NULL,
@@ -295,4 +297,22 @@ INSERT INTO repuesto (id_marca, id_modelo, descripcion, costo, stock) VALUES
 (3, 5, 'Sensor de huellas', 85.00, 55),
 (3, 5, 'Auricular', 55.00, 100);
 
+INSERT INTO estado_reparacion(descripcion) values ('Ingresado'), ('En espera'), ('En proceso'),('Finalizado');
 
+INSERT INTO equipos (id_marca, id_modelo, fecha_ingreso, usuario_id)
+VALUES
+(1, 1, NOW(), 5),
+(2, 2, NOW(), 4), 
+(3, 3, NOW(), 4), 
+(1, 2, NOW(), 5),
+(2, 1, NOW(),5); 
+
+INSERT INTO reparacion (equipo_id, cliente_id, tecnico_id, descripcion, fecha_inicio, estado, costo_repuestos, costo_servicio, costo_total)
+VALUES
+(5, 4, 2, 'Reemplazo de pantalla', NOW(), 1, 100.0, 50.0, 150.0), -- Reparación para equipo de cliente Carlos Rivera, atendida por técnico Ana Gomez
+(2, 5, 3, 'Actualización de software', NOW(), 2, 0.0, 80.0, 80.0), -- Reparación para equipo de cliente Juan Perez, atendida por técnico Mario Lopez
+(3, 5, 3, 'Reparación de batería', NOW(), 1, 80.0, 60.0, 140.0), -- Reparación para equipo de cliente Laura Torres, atendida por técnico Mario Lopez
+(1, 4, 3, 'Reemplazo de batería', NOW(), 2, 50.0, 70.0, 120.0), -- Reparación para equipo de cliente Carlos Rivera, atendida por técnico Mario Lopez
+(4, 5, 2, 'Reparación de pantalla táctil', NOW(), 1, 120.0, 100.0, 220.0); -- Reparación para equipo de cliente Ana Gomez, atendida por técnico Ana Gomez
+
+select * from usuarios where rol = 3;

@@ -9,11 +9,12 @@ export const login = async (req, res) => {
             return res.status(400).json(response_bad_request("Se requiere completar los datos para ingresar"));
         }
 
-        const [respuesta] = await db_pool_connection.query("SELECT cedula, nombre, rol FROM usuarios WHERE cedula = ? AND password = ?", [cedula, password]);
+        const [respuesta] = await db_pool_connection.query("SELECT usuario_id,cedula, nombre, rol FROM usuarios WHERE cedula = ? AND password = ?", [cedula, password]);
 
         if (respuesta.length > 0) {
             const user = respuesta[0];
             return res.status(200).json(response_success({
+                usuario_id: user.usuario_id,
                 cedula: user.cedula,
                 nombre: user.nombre,
                 rol: user.rol

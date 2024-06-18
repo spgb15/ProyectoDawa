@@ -76,13 +76,16 @@ export default function SignIn() {
                 return res.json();
             })
             .then((data) => {
-                console.log('Response from server:', data); // Log response for debugging
+                console.log('Response from server:', data); 
                 if (data && data.success) {
-                    if (data.data && data.data.cedula && data.data.nombre && data.data.rol) { // Verificar que data.user existe y tiene las propiedades esperadas
+                    if (data.data && data.data.cedula && data.data.nombre && data.data.rol) { 
+                        console.log(data);
                         const user = {
+                            id_usuario: data.data.usuario_id,
                             cedula: data.data.cedula,
                             nombre: data.data.nombre,
                             rol: data.data.rol,
+                            
                         };
                         localStorage.setItem('user', JSON.stringify(user));
                         setError(null);
@@ -95,7 +98,7 @@ export default function SignIn() {
                 }
             })
             .catch((err) => {
-                console.error('Error during login:', err); // Log error for debugging
+                console.error('Error during login:', err); 
                 setError(err.message || 'Usuario o contraseña incorrecta.');
             });
         }

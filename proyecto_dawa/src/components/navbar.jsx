@@ -1,4 +1,5 @@
-import * as React from 'react';
+import '../App.css';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,7 +14,6 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MobileFriendlyIcon from '@mui/icons-material/MobileFriendly';
 import { NavLink, useNavigate } from 'react-router-dom';
-import '../styles/navbar.css';
 import { Divider } from '@mui/material';
 
 export default function Navbar() {
@@ -26,7 +26,8 @@ export default function Navbar() {
 
     const services = [
         { title: 'Precios de los repuestos', path: '/precios' },
-        { title: 'Estado de la reparación', path: '/estado' }
+        { title: 'Estado de la reparación', path: '/estado' },
+        { title: 'Facturación', path: '/factura' },
     ];
 
     const navigate = useNavigate();
@@ -80,8 +81,8 @@ export default function Navbar() {
                     <Typography
                         variant="h6"
                         noWrap
-                        component="a"
-                        href="/"
+                        component={NavLink}
+                        to="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -125,10 +126,16 @@ export default function Navbar() {
                             }}
                         >
                             {pages.map((page) => (
-                                page.title === 'Servicios' ? (
-                                    <MenuItem key={page.title} onClick={handleOpenServicesMenu}>
-                                        <Typography textAlign="center">{page.title}</Typography>
-                                    </MenuItem>
+                                page.title === 'Servicios' ?
+                                    (user ? (
+                                        <MenuItem key={page.title} onClick={handleOpenServicesMenu}>
+                                            <Typography textAlign="center">{page.title}</Typography>
+                                        </MenuItem>
+                                    ) : (
+                                        <MenuItem key={page.title} onClick={handleCloseNavMenu} component={NavLink} to={page.path}>
+                                            <Typography textAlign="center">{page.title}</Typography>
+                                        </MenuItem>
+                                    )
                                 ) : (
                                     <MenuItem key={page.title} onClick={handleCloseNavMenu} component={NavLink} to={page.path}>
                                         <Typography textAlign="center">{page.title}</Typography>
@@ -141,8 +148,8 @@ export default function Navbar() {
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href="/"
+                        component={NavLink}
+                        to="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },

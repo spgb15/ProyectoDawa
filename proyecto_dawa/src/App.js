@@ -4,14 +4,15 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import inicio from './pages/inicio.js';
 import login from './pages/login.js';
 import Precios from './pages/precios.js';
-import Nosotros from './pages/nosotros.js';
-import Contactanos from './pages/contactanos.js';
-
+import Factura from './pages/factura.js';
+import EstadoCliente from './pages/estado.js';
+import EstadoTecnico from './pages/estadoTecnico.js';
+import EstadoAdmin from './pages/estadoAdmin.js';
 
 function App() {
 
   const isAuthenticated = !!localStorage.getItem('user');
-  
+
   return (
     <Router>
       <Routes>
@@ -20,8 +21,10 @@ function App() {
           <Route path='/login' element={<Navigate to="/" />} />
         ):(<Route path='/login' Component={login}/>)}
         <Route path='/precios' Component={Precios}/>
-        <Route path='/nosotros' Component={Nosotros}/>
-        <Route path='/contacto' Component={Contactanos}/>
+        <Route path='/factura' Component={Factura}/>
+        <Route path='/estadoCliente' Component={EstadoCliente}/>
+        <Route path='/estadoTecnico' Component={EstadoTecnico}/>
+        <Route path='/estadoAdmin' Component={EstadoAdmin}/>
       </Routes>
     </Router>
   );

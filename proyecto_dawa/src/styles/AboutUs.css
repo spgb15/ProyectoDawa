@@ -1,0 +1,28 @@
+.about-us-container {
+    padding: 20px;
+  }
+  
+  .section {
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .blue-title {
+    color: #0099ff; 
+    font-family: 'Roboto', sans-serif; 
+  }
+  
+  .about-us-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 8px;
+  }
+  
+  @media (max-width: 600px) {
+    .section {
+      padding: 15px;
+    }
+  }
+  

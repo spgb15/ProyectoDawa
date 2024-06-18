@@ -58,15 +58,15 @@ export const ObtenerRepuestos = async (req, res) => {
 
 export const InsertarProducto = async (req, res) => {
     try {
-        const { marca, modelo, descripcion, precio } = req.body;
+        const { marca, modelo, descripcion, precio, stock } = req.body;
         
-        if (!marca || !modelo || !descripcion || !precio) {
+        if (!marca || !modelo || !descripcion || !precio || !stock) {
             return res.status(400).json(response_bad_request(400, "Todos los campos son requeridos"));
         }
 
         const [resp] = await db_pool_connection.query(
-            "INSERT INTO REPUESTO (id_marca, id_modelo, descripcion, costo) VALUES (?,?,?,?)",
-            [marca, modelo, descripcion, precio]
+            "INSERT INTO REPUESTO (id_marca, id_modelo, descripcion, costo, stock) VALUES (?,?,?,?,?)",
+            [marca, modelo, descripcion, precio, stock]
         );
 
         return res.status(201).json(response_created(resp.insertId, "Producto ingresado con éxito"));
@@ -77,23 +77,25 @@ export const InsertarProducto = async (req, res) => {
     }
 }
 
-export const ActualizarProducto = async(req,res) => {
-    try{
-        const {repuesto_id ,marca, modelo, descripcion, precio } = req.body;
+export const ActualizarProducto = async (req, res) => {
+    try {
+        const { repuesto_id, marca, modelo, descripcion, precio, stock } = req.body;
         
-        if (!id || !marca || !modelo || !descripcion || !precio) {
+        if (!marca || !modelo || !descripcion || !precio ||  !stock || !repuesto_id) {
             return res.status(400).json(response_bad_request(400, "Todos los campos son requeridos"));
         }
 
         const [resp] = await db_pool_connection.query(
-            "UPDATE REPUESTO SET id_marca = ?, id_modelo = ?, descripcion = ?, costo = ? WHERE repuesto_id = ?",
-            [marca, modelo, descripcion, precio, repuesto_id]
+            "UPDATE REPUESTO SET id_marca = ?, id_modelo = ?, descripcion = ?, costo = ?, stock = ? WHERE repuesto_id = ?",
+            [marca, modelo, descripcion, precio, stock,repuesto_id]
         );
-        return res.status(200).json(response_success(resp.affectedRows, "Producto editado con exito"));
-    }catch(error){
-        return res.status(500).json(response_error(500, "Estudiante no ha sido actualizado"));
+
+        return res.status(200).json(response_success(resp.affectedRows, "Producto editado con éxito"));
+    } catch (error) {
+        console.error("Error al actualizar producto:", error);
+        return res.status(500).json(response_error(500, "No se pudo actualizar el producto"));
     }
-}
+};
 
 export const EliminarProducto = async (req, res) => {
     try{

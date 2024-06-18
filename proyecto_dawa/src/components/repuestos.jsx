@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Button, Modal, TextField, Stack } from '@mui/material';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import {
+    Typography,
+    Button,
+    Modal,
+    TextField,
+    Box,
+    InputLabel,
+    MenuItem,
+    FormControl,
+    Select,
+    Stack
+} from '@mui/material';
 import TablaRepuestos from "./tabla_repuestos.jsx";
 
 export default function Repuestos() {
@@ -13,34 +19,15 @@ export default function Repuestos() {
     const [marcaSeleccionada, setMarcaSeleccionada] = useState('');
     const [modeloSeleccionado, setModeloSeleccionado] = useState('');
     const [banderaAdd, setBanderaAdd] = useState(false);
-    const [nuevoRepuesto, setNuevoRepuesto] = useState({ marca: '', modelo: '', descripcion: '', precio: '' });
-    const user = JSON.parse(localStorage.getItem('user'));
-    const rol = user.rol;
-
-    useEffect(() => {
-        fetch('http://localhost:3200/api/marcas')
-            .then((res) => res.json())
-            .then((data) => {
-                setMarcas(data.data || []);
-            })
-            .catch(error => console.error('Error fetching marcas:', error));
-    }, []);
-
-    useEffect(() => {
-        if (marcaSeleccionada) {
-            fetch(`http://localhost:3200/api/modelos/${marcaSeleccionada}`)
-                .then((res) => res.json())
-                .then((data) => {
-                    setModelos(data.data || []);
-                })
-                .catch(error => {
-                    console.error('Error fetching modelos:', error);
-                    setModelos([]);
-                });
-        } else {
-            setModelos([]);
-        }
-    }, [marcaSeleccionada]);
+    const [nuevoRepuestoModal, setNuevoRepuestoModal] = useState({
+        marca: '',
+        modelo: '',
+        descripcion: '',
+        precio: '',
+        stock: ''
+    });
+    const [rol, setRol] = useState(null);
+    const [modelosModal, setModelosModal] = useState([]);
 
     const style = {
         position: 'absolute',
@@ -58,27 +45,109 @@ export default function Repuestos() {
         alignItems: 'center',
     };
 
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            setRol(user.rol);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetch('http://localhost:3200/api/marcas')
+            .then((res) => res.json())
+            .then((data) => {
+                setMarcas(data.data || []);
+            })
+            .catch(error => console.error('Error fetching marcas:', error));
+    }, []);
+
+    const cargarModelos = (selectedMarca, modal = false) => {
+        if (selectedMarca) {
+            fetch(`http://localhost:3200/api/modelos/${selectedMarca}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (modal) {
+                        setModelosModal(data.data || []);
+                    } else {
+                        setModelos(data.data || []);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching modelos:', error);
+                    if (modal) {
+                        setModelosModal([]);
+                    } else {
+                        setModelos([]);
+                    }
+                });
+        }
+    };
+
     const handleMarcaChange = (event) => {
         const selectedMarca = event.target.value;
         setMarcaSeleccionada(selectedMarca);
         setModeloSeleccionado('');
-        setNuevoRepuesto((prevState) => ({ ...prevState, marca: selectedMarca }));
+        cargarModelos(selectedMarca);
     };
 
     const handleModeloChange = (event) => {
         const selectedModelo = event.target.value;
         setModeloSeleccionado(selectedModelo);
-        setNuevoRepuesto((prevState) => ({ ...prevState, modelo: selectedModelo }));
     };
 
     const handleInsertar = () => {
         setBanderaAdd(true);
+        setNuevoRepuestoModal({
+            ...nuevoRepuestoModal,
+            marca: '',
+            modelo: '',
+            descripcion: '',
+            precio: '',
+            stock: ''
+        });
     };
 
-    const handleChangeInput = e => {
-        const { name, value } = e.target;
-        setNuevoRepuesto((prevState) => ({ ...prevState, [name]: value }));
+    const handleGuardar = () => {
+        const datos = {
+            marca: nuevoRepuestoModal.marca,
+            modelo: nuevoRepuestoModal.modelo,
+            descripcion: nuevoRepuestoModal.descripcion,
+            precio: nuevoRepuestoModal.precio,
+            stock: nuevoRepuestoModal.stock
+        };
+
+        fetch('http://localhost:3200/api/repuestos/insertar', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datos),
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return res.json();
+        })
+        .then((data) => {
+            setBanderaAdd(false);
+        })
+        .catch((error) => {
+            console.error('Error al guardar:', error);
+        });
+        
+
+        
     };
+
+    const handleChangeInput = (e) => {
+        const { name, value } = e.target;
+        setNuevoRepuestoModal((prevState) => ({
+            ...prevState,
+            [name]: name === 'precio' || name === 'stock' ? parseFloat(value) || '' : value
+        }));
+    };
+
 
     return (
         <div>
@@ -127,17 +196,23 @@ export default function Repuestos() {
                         ))}
                     </Select>
                 </FormControl>
-                {rol === 1 ? (<Button
-                    variant="contained"
-                    color="info"
-                    onClick={handleInsertar}
-                >Añadir</Button>) : null}
-
+                {rol === 1 && (
+                    <Button
+                        variant="contained"
+                        color="info"
+                        onClick={handleInsertar}
+                    >
+                        Añadir
+                    </Button>
+                )}
             </Box>
-            {marcaSeleccionada && modeloSeleccionado ? (<TablaRepuestos id_marca={marcaSeleccionada} id_modelo={modeloSeleccionado} rol={rol} />
-            ) : null}
+
+            {marcaSeleccionada && modeloSeleccionado && ( //Componente Tabla
+                <TablaRepuestos id_marca={marcaSeleccionada} id_modelo={modeloSeleccionado} rol={rol}/>
+            )}
             <br />
-            <Modal
+        
+            <Modal //Modal para insertar
                 open={banderaAdd}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
@@ -149,63 +224,83 @@ export default function Repuestos() {
                     </Typography>
                     <br />
                     <div>
-                        <InputLabel id="marca-select-label">Marca</InputLabel>
-                        <Select
-                            labelId="marca-select-label"
-                            id="marca-select"
-                            value={nuevoRepuesto.marca}
-                            onChange={handleMarcaChange}
-                            label="Marca"
-                            fullWidth
-                        >
-                            {marcas.map((marca) => (
-                                <MenuItem key={marca.id_marca} value={marca.id_marca}>
-                                    {marca.descripcion}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                        <FormControl fullWidth sx={{ width: '100%', marginBottom: '2%' }}>
+                            <InputLabel id="marca-select-label-modal">Marca</InputLabel>
+                            <Select
+                                labelId="marca-select-label-modal"
+                                id="marca-select-modal"
+                                value={nuevoRepuestoModal.marca}
+                                onChange={(e) => {
+                                    const selectedMarca = e.target.value;
+                                    setNuevoRepuestoModal(prevState => ({
+                                        ...prevState,
+                                        marca: selectedMarca,
+                                        modelo: ''
+                                    }));
+                                    cargarModelos(selectedMarca, true);
+                                }}
+                                label="Marca"
+                            >
+                                <MenuItem value="">Seleccione una marca</MenuItem>
+                                {marcas.map((marca) => (
+                                    <MenuItem key={marca.id_marca} value={marca.id_marca}>
+                                        {marca.descripcion}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
 
-                        <br />
+                        <FormControl fullWidth sx={{ width: '100%', marginBottom: '2%' }}>
+                            <InputLabel id="modelo-select-label-modal">Modelo</InputLabel>
+                            <Select
+                                labelId="modelo-select-label-modal"
+                                id="modelo-select-modal"
+                                value={nuevoRepuestoModal.modelo}
+                                onChange={(e) => setNuevoRepuestoModal(prevState => ({
+                                    ...prevState,
+                                    modelo: e.target.value
+                                }))}
+                                label="Modelo"
+                            >
+                                <MenuItem value="">Seleccione un modelo</MenuItem>
+                                {modelosModal.map((modelo) => (
+                                    <MenuItem key={modelo.id_modelo} value={modelo.id_modelo}>
+                                        {modelo.descripcion}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
 
-                        <InputLabel id="modelo-select-label">Modelo</InputLabel>
-                        <Select
-                            labelId="modelo-select-label"
-                            id="modelo-select"
-                            value={nuevoRepuesto.modelo}
-                            onChange={handleModeloChange}
-                            disabled={!marcaSeleccionada}
-                            label="Modelo"
-                            fullWidth
-                        >
-                            {modelos.map((modelo) => (
-                                <MenuItem key={modelo.id_modelo} value={modelo.id_modelo}>
-                                    {modelo.descripcion}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        <br />
                         <TextField
                             name="descripcion"
                             id="outlined-required"
                             label="Nombre del Repuesto"
                             onChange={handleChangeInput}
-                            value={nuevoRepuesto.descripcion}
-                            sx={{ width: '100%', marginBottom: '10%' }}
+                            value={nuevoRepuestoModal.descripcion}
+                            sx={{ width: '100%', marginBottom: '2%' }}
                         />
-                        <br />
+
                         <TextField
                             name="precio"
                             id="outlined-required"
                             label="Costo"
                             onChange={handleChangeInput}
-                            value={nuevoRepuesto.precio}
+                            value={nuevoRepuestoModal.precio}
+                            sx={{ width: '100%', marginBottom: '2%' }}
+                        />
+
+                        <TextField
+                            name="stock"
+                            id="outlined-required"
+                            label="Stock"
+                            onChange={handleChangeInput}
+                            value={nuevoRepuestoModal.stock}
                             sx={{ width: '100%', marginBottom: '10%' }}
                         />
-                        <br />
                     </div>
-                    <br />
                     <Stack spacing={2} direction="row">
-                        <Button variant='contained'>
+                        <Button variant='contained'
+                            onClick={() => handleGuardar()}>
                             Guardar
                         </Button>
                         <Button variant='contained' color="error"
@@ -215,7 +310,6 @@ export default function Repuestos() {
                     </Stack>
                 </Box>
             </Modal>
-
         </div>
     );
 }

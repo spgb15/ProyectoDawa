@@ -7,9 +7,9 @@ const routes = new Router();
 routes.post('/api/login', login);
 routes.get('/api/marcas', ObtenerMarcas);
 routes.get('/api/modelos/:id', ObtenerModelos);
-routes.post('/api/repuestos/', ObtenerRepuestos);
+routes.post('/api/repuestos', ObtenerRepuestos); 
 routes.post('/api/repuestos/insertar', InsertarProducto);
-routes.post('/api/repuesto/actualizar', ActualizarProducto);
-routes.post('/api/repuestos/eliminar/:id', EliminarProducto);
+routes.put('/api/repuestos/actualizar', ActualizarProducto); 
+routes.delete('/api/repuestos/eliminar/:id', EliminarProducto); 
 
 export default routes;
